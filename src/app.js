@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { json } from 'express';
 
 const app = express();
 
@@ -99,4 +99,55 @@ app.post('/api/services', (req, res) => {
     });
 });
 
-export default app;
+// actualizar un servicio
+app.put('/api/services/:sid', (req, res) => {
+    const { sid } = req.params;
+
+    const serviceIndex = services.findIndex(
+        (service) => service.id === Number(sid)
+    );
+
+    if (serviceIndex === -1) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'Servicio no encontrado'
+        });
+    }
+
+    const updatedService = {
+        ...services[serviceIndex],
+        ...req.body,
+        id: services[serviceIndex].id
+    };
+
+    services[serviceIndex] = updatedService;
+
+    res.status(200).json({
+        status: 'success',
+        payload: updatedService
+    });
+});
+
+
+// eliminar un servicio
+app.delete('/api/services/:sid', (req, res) => {
+    const { sid } = req.params;
+
+    const serviceIndex = services.findIndex(
+        (service) => service.id === Number(sid)
+    );
+
+    if (serviceIndex === -1) {
+        return res.status(404).json({
+            status: 'error',
+            message: 'Servicio no encontrado'
+        });
+    }
+
+    const deletedService = services.splice(serviceIndex, 1);
+
+    res.status(200).json({
+        status: 'success',
+        payload: deletedService[0]
+    });
+});
