@@ -32,7 +32,7 @@ const services = [
     }
 ];
 
-// Obtener todos los servicios o filtrar por categoría
+//  todos los servicios o filtrar por categoría
 app.get('/api/services', (req, res) => {
     const { category } = req.query;
 
@@ -50,7 +50,7 @@ app.get('/api/services', (req, res) => {
     });
 });
 
-// Obtener un servicio por ID
+// un servicio por ID
 app.get('/api/services/:sid', (req, res) => {
     const { sid } = req.params;
 
@@ -71,7 +71,7 @@ app.get('/api/services/:sid', (req, res) => {
     });
 });
 
-// Crear un nuevo servicio
+// nuevo servicio
 app.post('/api/services', (req, res) => {
     const { name, duration, price, category, available } = req.body;
 
