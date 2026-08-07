@@ -1,3 +1,4 @@
+import { json } from 'express';
 import {
     getServices as getAllServices,
     getServicesById,
@@ -8,7 +9,7 @@ import {
 
 
 // GET /api/services
-export const getServices = async (req, res) => {
+export const getServices = async (req, res) => { 
     try {
         const { category, available } = req.query;
 
@@ -108,6 +109,27 @@ export const updatedService = async (req, res) => {
         });
     }
 };
+
+
+// Editar servicio
+export const editService = async (req,res) => {
+    try{
+        const {sid} = req.params;
+
+        const result = await updateService (sid,req.body);
+
+        if (result.status === 'error'){
+            return res.status(404).json(result);
+        }
+        res.status(200).json(result);
+    }
+        catch (error){
+        res.status(500).json({
+            status:'error',
+            message: 'Error al eliminar servicio'
+        });
+    }
+    };
 
 
 // DELETE /api/services/:sid
