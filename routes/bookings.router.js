@@ -5,7 +5,9 @@ import {
     getBookings,
     getBookingById,
     updateBooking,
-    deleteBooking
+    deleteBooking,
+    addServiceToBooking,
+    removeServiceFromBooking,
 } from '../controllers/bookings.controller.js';
 
 import { validateBody } from '../middlewares/validateBody.js';
@@ -28,6 +30,13 @@ router.post(
 router.put('/:bid', updateBooking);
 
 router.delete('/:bid', deleteBooking);
+
+
+
+router.post('/:bid/services/:sid', addServiceToBooking);
+
+
+router.delete('/:bid/services/:sid', removeServiceFromBooking);
 
 
 export default router;
