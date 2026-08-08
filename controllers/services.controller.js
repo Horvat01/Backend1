@@ -1,15 +1,14 @@
-import { json } from 'express';
 import {
     getServices as getAllServices,
     getServicesById,
     addService,
-    updateService,
-    deleteService
-} from '../managers/ServiceManager.js';
+    updateService as updateServiceManager,
+    deleteService as deleteServiceManager
+} from '../managgers/ServiceManagers.js';
 
 
 // GET /api/services
-export const getServices = async (req, res) => { 
+export const getServices = async (req, res) => {
     try {
         const { category, available } = req.query;
 
@@ -90,11 +89,11 @@ export const createService = async (req, res) => {
 
 
 // PUT /api/services/:sid
-export const updatedService = async (req, res) => {
+export const updateService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const result = await updateService(sid, req.body);
+        const result = await updateServiceManager(sid, req.body);
 
         if (result.status === 'error') {
             return res.status(404).json(result);
@@ -111,33 +110,12 @@ export const updatedService = async (req, res) => {
 };
 
 
-// Editar servicio
-export const editService = async (req,res) => {
-    try{
-        const {sid} = req.params;
-
-        const result = await updateService (sid,req.body);
-
-        if (result.status === 'error'){
-            return res.status(404).json(result);
-        }
-        res.status(200).json(result);
-    }
-        catch (error){
-        res.status(500).json({
-            status:'error',
-            message: 'Error al eliminar servicio'
-        });
-    }
-    };
-
-
 // DELETE /api/services/:sid
-export const deletedService = async (req, res) => {
+export const deleteService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const result = await deleteService(sid);
+        const result = await deleteServiceManager(sid);
 
         if (result.status === 'error') {
             return res.status(404).json(result);

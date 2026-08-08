@@ -1,9 +1,16 @@
-import { bookingsService } from '../services/booking.service.js';
+import {
+    createBooking as createBookingManager,
+    getBookingById as getBookingByIdManager,
+    addServiceToBooking as addServiceToBookingManager
+} from '../managgers/BookingManager.js';
 
+import {
+    getServicesById
+} from '../managgers/ServiceManagers.js';
 
 export const createBooking = async (req, res) => {
     try {
-        const booking = await bookingsService.createBooking(req.body);
+        const booking = await createBookingManager(req.body);
 
         res.status(201).json({
             status: 'success',
@@ -21,10 +28,16 @@ export const createBooking = async (req, res) => {
 
 export const getBookingById = async (req, res) => {
     try {
-        const booking = await bookingsService.getBookingById(
-            req.params.bid,
-            { populate: true }
-        );
+        const { bid } = req.params;
+
+        const booking = await getBookingByIdManager(bid);
+
+        if (!booking) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Reserva no encontrada'
+            });
+        }
 
         res.status(200).json({
             status: 'success',
@@ -32,7 +45,7 @@ export const getBookingById = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: 'error',
             message: error.message
         });
@@ -42,10 +55,18 @@ export const getBookingById = async (req, res) => {
 
 export const addServiceToBooking = async (req, res) => {
     try {
-        const booking = await bookingsService.addServiceToBooking(
-            req.params.bid,
-            req.params.sid
-        );
+        const { bid, sid } = req.params;
+
+        const service = await getServicesById(sid);
+
+        if (!service) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Servicio no encontrado'
+            });
+        }
+
+        const booking = await addServiceToBookingManager(bid, sid);
 
         res.status(200).json({
             status: 'success',
@@ -53,49 +74,7 @@ export const addServiceToBooking = async (req, res) => {
         });
 
     } catch (error) {
-        res.status(404).json({
-            status: 'error',
-            message: error.message
-        });
-    }
-};
-
-
-export const removeServiceFromBooking = async (req, res) => {
-    try {
-        const booking = await bookingsService.removeServiceFromBooking(
-            req.params.bid,
-            req.params.sid
-        );
-
-        res.status(200).json({
-            status: 'success',
-            payload: booking
-        });
-
-    } catch (error) {
-        res.status(404).json({
-            status: 'error',
-            message: error.message
-        });
-    }
-};
-
-
-export const updateBooking = async (req, res) => {
-    try {
-        const booking = await bookingsService.updateBooking(
-            req.params.bid,
-            req.body
-        );
-
-        res.status(200).json({
-            status: 'success',
-            payload: booking
-        });
-
-    } catch (error) {
-        res.status(404).json({
+        res.status(500).json({
             status: 'error',
             message: error.message
         });

@@ -1,8 +1,7 @@
 import express from 'express';
-
-import servicesRouter from './routes/services.router.js';
-import bookingsRouter from './routes/bookings.router.js';
-import viewsRouter from './routes/views.router.js';
+import bookingsRouter from '../routes/bookings.router.js';
+import servicesRouter from '../routes/service.router.js';
+import viewsRouter from '../routes/views.router.js';
 
 const app = express();
 
@@ -13,7 +12,7 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use('/api/view.routes.js', viewRoutes);
+app.use('/', viewsRouter);
 app.use('/api/services', servicesRouter);
 app.use('/api/bookings', bookingsRouter);
 
