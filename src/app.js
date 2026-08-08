@@ -1,9 +1,15 @@
 import express from 'express';
+import { engine } from 'express-handlebars';
+
 import bookingsRouter from '../routes/bookings.router.js';
 import servicesRouter from '../routes/service.router.js';
 import viewsRouter from '../routes/views.router.js';
 
 const app = express();
+
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './views');
 
 app.use(express.json());
 
