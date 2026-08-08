@@ -29,7 +29,7 @@ export const bookingsService = {
 
     addServiceToBooking: async (bid, sid) => {
 
-        // Primero verificamos que exista la reserva
+        // verificamos que exista la reserva
         const booking = await getBookingById(bid);
 
         if (!booking) {
@@ -37,7 +37,7 @@ export const bookingsService = {
         }
 
 
-        // Después verificamos que exista el servicio
+        // verificamos que exista el servicio
         const service = await getServiceById(sid);
 
         if (!service) {
@@ -45,7 +45,7 @@ export const bookingsService = {
         }
 
 
-        // Verificamos que el servicio no esté agregado
+
         if (booking.services?.some(
             serviceId => serviceId.toString() === sid.toString()
         )) {
