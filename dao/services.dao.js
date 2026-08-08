@@ -19,7 +19,7 @@ const writeServices = async (services) => {
 };
 
 export const getAll = async () => {
-    return await readServices();
+    return readServices();
 };
 
 export const getById = async (id) => {
@@ -71,7 +71,7 @@ export const update = async (id, serviceData) => {
     return updatedService;
 };
 
-export const remove = async (id) => {
+export const deleteService = async (id) => {
     const services = await readServices();
 
     const serviceIndex = services.findIndex(

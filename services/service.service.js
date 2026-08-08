@@ -1,11 +1,11 @@
 import * as serviceRepository from '../repositories/services.repository.js';
 
 export const getServices = async () => {
-    return await serviceRepository.getAll();
+    return serviceRepository.getAll();
 };
 
 export const getServiceById = async (id) => {
-    return await serviceRepository.getById(id);
+    return serviceRepository.getById(id);
 };
 
 export const createService = async (serviceData) => {
@@ -35,7 +35,7 @@ export const createService = async (serviceData) => {
         available: available ?? true
     };
 
-    return await serviceRepository.create(newService);
+    return serviceRepository.create(newService);
 };
 
 export const updateService = async (id, serviceData) => {
@@ -49,9 +49,9 @@ export const updateService = async (id, serviceData) => {
         throw new Error('El precio no puede ser negativo.');
     }
 
-    return await serviceRepository.update(id, serviceData);
+    return serviceRepository.update(id, serviceData);
 };
 
 export const deleteService = async (id) => {
-    return await serviceRepository.remove(id);
+    return serviceRepository.remove(id);
 };

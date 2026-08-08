@@ -1,0 +1,74 @@
+[
+  {
+    "id": 1,
+    "name": "Visita técnica",
+    "description": "Visita a domicilio para revisar el estado del portón, detectar fallas y realizar un diagnóstico.",
+    "duration": 60,
+    "price": 1200,
+    "category": "Visitas",
+    "available": true
+  },
+  {
+    "id": 2,
+    "name": "Reparación de portón automático",
+    "description": "Diagnóstico y reparación de fallas en sistemas de apertura y cierre automático de portones.",
+    "duration": 120,
+    "price": 2500,
+    "category": "Reparaciones",
+    "available": true
+  },
+  {
+    "id": 3,
+    "name": "Reparación de motor",
+    "description": "Revisión y reparación de motores de portones automáticos que presentan fallas de funcionamiento.",
+    "duration": 120,
+    "price": 3000,
+    "category": "Reparaciones",
+    "available": true
+  },
+  {
+    "id": 4,
+    "name": "Reparación de placa electrónica",
+    "description": "Diagnóstico y reparación de placas electrónicas de centrales de portones automáticos.",
+    "duration": 120,
+    "price": 2800,
+    "category": "Reparaciones",
+    "available": true
+  },
+  {
+    "id": 5,
+    "name": "Mantenimiento preventivo",
+    "description": "Mantenimiento general del portón, lubricación, regulación y revisión de componentes.",
+    "duration": 90,
+    "price": 1800,
+    "category": "Mantenimiento",
+    "available": true
+  },
+  {
+    "id": 6,
+    "name": "Programación de controles",
+    "description": "Programación y configuración de controles remotos para portones automáticos.",
+    "duration": 30,
+    "price": 800,
+    "category": "Configuración",
+    "available": true
+  },
+  {
+    "id": 7,
+    "name": "Instalación de automatismo",
+    "description": "Instalación y configuración de un sistema de automatización para portones.",
+    "duration": 180,
+    "price": 6500,
+    "category": "Instalaciones",
+    "available": true
+  },
+  {
+    "id": 8,
+    "name": "Visita para reparación",
+    "description": "Visita técnica para evaluar una falla en el portón y determinar la reparación necesaria.",
+    "duration": 60,
+    "price": 1500,
+    "category": "Visitas",
+    "available": true
+  }
+]

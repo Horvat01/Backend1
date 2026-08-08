@@ -1,15 +1,14 @@
 import {
-    createBooking as createBookingManager,
-    getBookingById as getBookingByIdManager,
-    addServiceToBooking as addServiceToBookingManager
-} from '../managgers/BookingManager.js';
+    createBooking as createBookingService,
+    getBookingById as getBookingByIdService,
+    addServiceToBooking as addServiceToBookingService
+} from '../services/booking.service.js';
 
 import { getServiceById } from '../services/service.service.js';
 
-
 export const createBooking = async (req, res) => {
     try {
-        const booking = await createBookingManager(req.body);
+        const booking = await createBookingService(req.body);
 
         res.status(201).json({
             status: 'success',
@@ -24,12 +23,11 @@ export const createBooking = async (req, res) => {
     }
 };
 
-
 export const getBookingById = async (req, res) => {
     try {
         const { bid } = req.params;
 
-        const booking = await getBookingByIdManager(bid);
+        const booking = await getBookingByIdService(bid);
 
         if (!booking) {
             return res.status(404).json({
@@ -51,7 +49,6 @@ export const getBookingById = async (req, res) => {
     }
 };
 
-
 export const addServiceToBooking = async (req, res) => {
     try {
         const { bid, sid } = req.params;
@@ -65,7 +62,7 @@ export const addServiceToBooking = async (req, res) => {
             });
         }
 
-        const booking = await addServiceToBookingManager(bid, sid);
+        const booking = await addServiceToBookingService(bid, sid);
 
         if (!booking) {
             return res.status(404).json({

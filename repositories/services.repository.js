@@ -1,4 +1,4 @@
-import * as serviceDao from '../dao/services.fs.dao.js';
+import * as serviceDao from '../dao/services.dao.js';
 
 export const getAll = async () => {
     return await serviceDao.getAll();
