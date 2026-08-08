@@ -4,9 +4,8 @@ import {
     addServiceToBooking as addServiceToBookingManager
 } from '../managgers/BookingManager.js';
 
-import {
-    getServicesById
-} from '../managgers/ServiceManagers.js';
+import { getServiceById } from '../services/service.service.js';
+
 
 export const createBooking = async (req, res) => {
     try {
@@ -57,7 +56,7 @@ export const addServiceToBooking = async (req, res) => {
     try {
         const { bid, sid } = req.params;
 
-        const service = await getServicesById(sid);
+        const service = await getServiceById(sid);
 
         if (!service) {
             return res.status(404).json({
@@ -67,6 +66,13 @@ export const addServiceToBooking = async (req, res) => {
         }
 
         const booking = await addServiceToBookingManager(bid, sid);
+
+        if (!booking) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Reserva no encontrada'
+            });
+        }
 
         res.status(200).json({
             status: 'success',

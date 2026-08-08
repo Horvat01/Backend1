@@ -1,133 +1,133 @@
-import fs from 'node:fs/promises';
+// import fs from 'node:fs/promises';
 
-const filePath = './src/data/services.json';
+// const filePath = './src/data/services.json';
 
-const readServices = async () => {
-    try {
-        const data = await fs.readFile(filePath, 'utf-8');
-        return JSON.parse(data);
-    } catch (error) {
-        return [];
-    }
-};
+// const readServices = async () => {
+//     try {
+//         const data = await fs.readFile(filePath, 'utf-8');
+//         return JSON.parse(data);
+//     } catch (error) {
+//         return [];
+//     }
+// };
 
-const writeServices = async (services) => {
-    await fs.writeFile(
-        filePath,
-        JSON.stringify(services, null, 2)
-    );
-};
+// const writeServices = async (services) => {
+//     await fs.writeFile(
+//         filePath,
+//         JSON.stringify(services, null, 2)
+//     );
+// };
 
-export const getServices = async () => {
-    const services = await readServices();
-    return services;
-};
+// export const getServices = async () => {
+//     const services = await readServices();
+//     return services;
+// };
 
-export const getServicesById = async (id) => {
-    const services = await readServices();
+// export const getServicesById = async (id) => {
+//     const services = await readServices();
 
-    const service = services.find(
-        (service) => service.id === Number(id)
-    );
+//     const service = services.find(
+//         (service) => service.id === Number(id)
+//     );
 
-    if (!service) {
-        return null;
-    }
+//     if (!service) {
+//         return null;
+//     }
 
-    return service;
-};
+//     return service;
+// };
 
-export const addService = async (serviceData) => {
-    const {
-        name,
-        description,
-        duration,
-        price,
-        category,
-        available
-    } = serviceData;
+// export const addService = async (serviceData) => {
+//     const {
+//         name,
+//         description,
+//         duration,
+//         price,
+//         category,
+//         available
+//     } = serviceData;
 
-    if (!name || !description || !duration || !price || !category) {
-        return {
-            status: 'error',
-            message: 'Faltan campos obligatorios.'
-        };
-    }
+//     if (!name || !description || !duration || !price || !category) {
+//         return {
+//             status: 'error',
+//             message: 'Faltan campos obligatorios.'
+//         };
+//     }
 
-    const services = await readServices();
+//     const services = await readServices();
 
-    const newService = {
-        id: services.length > 0
-            ? services[services.length - 1].id + 1
-            : 1,
-        name,
-        description,
-        duration,
-        price,
-        category,
-        available: available ?? true
-    };
+//     const newService = {
+//         id: services.length > 0
+//             ? services[services.length - 1].id + 1
+//             : 1,
+//         name,
+//         description,
+//         duration,
+//         price,
+//         category,
+//         available: available ?? true
+//     };
 
-    services.push(newService);
+//     services.push(newService);
 
-    await writeServices(services);
+//     await writeServices(services);
 
-    return {
-        status: 'success',
-        payload: newService
-    };
-};
+//     return {
+//         status: 'success',
+//         payload: newService
+//     };
+// };
 
-export const updateService = async (id, serviceData) => {
-    const services = await readServices();
+// export const updateService = async (id, serviceData) => {
+//     const services = await readServices();
 
-    const serviceIndex = services.findIndex(
-        (service) => service.id === Number(id)
-    );
+//     const serviceIndex = services.findIndex(
+//         (service) => service.id === Number(id)
+//     );
 
-    if (serviceIndex === -1) {
-        return {
-            status: 'error',
-            message: 'Servicio no encontrado'
-        };
-    }
+//     if (serviceIndex === -1) {
+//         return {
+//             status: 'error',
+//             message: 'Servicio no encontrado'
+//         };
+//     }
 
-    const updatedService = {
-        ...services[serviceIndex],
-        ...serviceData,
-        id: services[serviceIndex].id
-    };
+//     const updatedService = {
+//         ...services[serviceIndex],
+//         ...serviceData,
+//         id: services[serviceIndex].id
+//     };
 
-    services[serviceIndex] = updatedService;
+//     services[serviceIndex] = updatedService;
 
-    await writeServices(services);
+//     await writeServices(services);
 
-    return {
-        status: 'success',
-        payload: updatedService
-    };
-};
+//     return {
+//         status: 'success',
+//         payload: updatedService
+//     };
+// };
 
-export const deleteService = async (id) => {
-    const services = await readServices();
+// export const deleteService = async (id) => {
+//     const services = await readServices();
 
-    const serviceIndex = services.findIndex(
-        (service) => service.id === Number(id)
-    );
+//     const serviceIndex = services.findIndex(
+//         (service) => service.id === Number(id)
+//     );
 
-    if (serviceIndex === -1) {
-        return {
-            status: 'error',
-            message: 'Servicio no encontrado'
-        };
-    }
+//     if (serviceIndex === -1) {
+//         return {
+//             status: 'error',
+//             message: 'Servicio no encontrado'
+//         };
+//     }
 
-    const deletedService = services.splice(serviceIndex, 1);
+//     const deletedService = services.splice(serviceIndex, 1);
 
-    await writeServices(services);
+//     await writeServices(services);
 
-    return {
-        status: 'success',
-        payload: deletedService[0]
-    };
-};
+//     return {
+//         status: 'success',
+//         payload: deletedService[0]
+//     };
+// };

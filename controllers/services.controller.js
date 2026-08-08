@@ -1,11 +1,10 @@
 import {
     getServices as getAllServices,
-    getServicesById,
-    addService,
-    updateService as updateServiceManager,
-    deleteService as deleteServiceManager
-} from '../managgers/ServiceManagers.js';
-
+    getServiceById as getServiceByIdService,
+    createService as createServiceService,
+    updateService as updateServiceService,
+    deleteService as deleteServiceService
+} from '../services/service.service.js';
 
 // GET /api/services
 export const getServices = async (req, res) => {
@@ -16,13 +15,13 @@ export const getServices = async (req, res) => {
 
         if (category) {
             services = services.filter(
-                (service) => service.category === category
+                service => service.category === category
             );
         }
 
-        if (available) {
+        if (available !== undefined) {
             services = services.filter(
-                (service) => service.available === (available === 'true')
+                service => service.available === (available === 'true')
             );
         }
 
@@ -39,13 +38,12 @@ export const getServices = async (req, res) => {
     }
 };
 
-
 // GET /api/services/:sid
 export const getServiceById = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const service = await getServicesById(sid);
+        const service = await getServiceByIdService(sid);
 
         if (!service) {
             return res.status(404).json({
@@ -67,61 +65,72 @@ export const getServiceById = async (req, res) => {
     }
 };
 
-
 // POST /api/services
 export const createService = async (req, res) => {
     try {
-        const result = await addService(req.body);
+        const newService = await createServiceService(req.body);
 
-        if (result.status === 'error') {
-            return res.status(400).json(result);
-        }
-
-        res.status(201).json(result);
+        res.status(201).json({
+            status: 'success',
+            payload: newService
+        });
 
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             status: 'error',
             message: error.message
         });
     }
 };
-
 
 // PUT /api/services/:sid
 export const updateService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const result = await updateServiceManager(sid, req.body);
+        const updatedService = await updateServiceService(
+            sid,
+            req.body
+        );
 
-        if (result.status === 'error') {
-            return res.status(404).json(result);
+        if (!updatedService) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Servicio no encontrado'
+            });
         }
 
-        res.status(200).json(result);
+        res.status(200).json({
+            status: 'success',
+            payload: updatedService
+        });
 
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             status: 'error',
             message: error.message
         });
     }
 };
 
-
 // DELETE /api/services/:sid
 export const deleteService = async (req, res) => {
     try {
         const { sid } = req.params;
 
-        const result = await deleteServiceManager(sid);
+        const deletedService = await deleteServiceService(sid);
 
-        if (result.status === 'error') {
-            return res.status(404).json(result);
+        if (!deletedService) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Servicio no encontrado'
+            });
         }
 
-        res.status(200).json(result);
+        res.status(200).json({
+            status: 'success',
+            payload: deletedService
+        });
 
     } catch (error) {
         res.status(500).json({
