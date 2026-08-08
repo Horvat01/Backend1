@@ -15,7 +15,7 @@ const serviceSchema = new mongoose.Schema(
         price: {
             type: Number,
             required: true,
-            main: 0
+            main: 1
         },
         category: {
             type: String,
