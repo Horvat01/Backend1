@@ -9,25 +9,31 @@ import {
 // GET /api/services
 export const getServices = async (req, res) => {
     try {
-        const { category, available } = req.query;
+        const {
+            category,
+            available,
+            page,
+            limit,
+            sort
+        } = req.query;
 
-        let services = await getAllServices();
-
-        if (category) {
-            services = services.filter(
-                service => service.category === category
-            );
-        }
-
-        if (available !== undefined) {
-            services = services.filter(
-                service => service.available === (available === 'true')
-            );
-        }
+        const result = await getAllServices({
+            category,
+            available,
+            page,
+            limit,
+            sort
+        });
 
         res.status(200).json({
             status: 'success',
-            payload: services
+            payload: result.docs,
+            totalPages: result.totalPages,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage,
+            page: result.page,
+            hasPrevPage: result.hasPrevPage,
+            hasNextPage: result.hasNextPage
         });
 
     } catch (error) {

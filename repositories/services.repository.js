@@ -1,7 +1,7 @@
 import * as serviceDao from '../dao/services.dao.js';
 
-export const getAll = async () => {
-    return await serviceDao.getAll();
+export const getAll = async (filters) => {
+    return await serviceDao.getAll(filters);
 };
 
 export const getById = async (id) => {
