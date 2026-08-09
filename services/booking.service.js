@@ -24,20 +24,19 @@ export const addServiceToBooking = async (bookingId, serviceId) => {
         booking.services = [];
     }
 
-    const serviceIdNumber = Number(serviceId);
-
     const existingService = booking.services.find(
-        service => service.service === serviceIdNumber
+        service => service.service.toString() === serviceId.toString()
     );
 
     if (existingService) {
         existingService.quantity += 1;
     } else {
         booking.services.push({
-            service: serviceIdNumber,
+            service: serviceId,
             quantity: 1
         });
     }
 
     return bookingRepository.update(bookingId, booking);
 };
+

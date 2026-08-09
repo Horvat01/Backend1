@@ -17,5 +17,5 @@ export const update = async (id, serviceData) => {
 };
 
 export const remove = async (id) => {
-    return await serviceDao.remove(id);
+    return await serviceDao.deleteService(id);
 };

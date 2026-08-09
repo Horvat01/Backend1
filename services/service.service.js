@@ -18,7 +18,13 @@ export const createService = async (serviceData) => {
         available
     } = serviceData;
 
-    if (!name || !description || !duration || !price || !category) {
+    if (
+        !name ||
+        !description ||
+        duration === undefined ||
+        price === undefined ||
+        !category
+    ) {
         throw new Error('Faltan campos obligatorios.');
     }
 
@@ -45,7 +51,10 @@ export const updateService = async (id, serviceData) => {
         return null;
     }
 
-    if (serviceData.price !== undefined && serviceData.price < 0) {
+    if (
+        serviceData.price !== undefined &&
+        serviceData.price < 0
+    ) {
         throw new Error('El precio no puede ser negativo.');
     }
 
@@ -55,3 +64,4 @@ export const updateService = async (id, serviceData) => {
 export const deleteService = async (id) => {
     return serviceRepository.remove(id);
 };
+
