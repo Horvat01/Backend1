@@ -1,21 +1,21 @@
-import * as serviceDao from '../dao/services.dao.js';
+import { servicesMongoDao } from '../dao/mongo/services.mongo.dao.js';
 
-export const getAll = async (filters) => {
-    return await serviceDao.getAll(filters);
+export const getAll = async (filters = {}) => {
+    return await servicesMongoDao.getAll(filters);
 };
 
 export const getById = async (id) => {
-    return await serviceDao.getById(id);
+    return await servicesMongoDao.getById(id);
 };
 
 export const create = async (serviceData) => {
-    return await serviceDao.create(serviceData);
+    return await servicesMongoDao.create(serviceData);
 };
 
 export const update = async (id, serviceData) => {
-    return await serviceDao.update(id, serviceData);
+    return await servicesMongoDao.update(id, serviceData);
 };
 
 export const remove = async (id) => {
-    return await serviceDao.deleteService(id);
+    return await servicesMongoDao.delete(id);
 };

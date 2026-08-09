@@ -1,6 +1,13 @@
 import { BookingModel } from '../models/booking.model.js';
 
 export class BookingMongoDao {
+
+    async getAll() {
+        return BookingModel.find()
+            .populate('services.service')
+            .lean();
+    }
+
     async create(data) {
         return BookingModel.create(data);
     }

@@ -1,15 +1,18 @@
 export const validateBody = (schema) => {
     return (req, res, next) => {
-        const missingFields = schema.required.filter(
-            field => !req.body[field]
-        );
+        const result = schema.safeParse(req.body);
 
-        if (missingFields.length > 0) {
+        if (!result.success) {
             return res.status(400).json({
-                error: `Faltan campos requeridos: ${missingFields.join(', ')}`
+                status: 'error',
+                message: 'Datos inválidos',
+                errors: result.error.issues
             });
         }
+
+        req.body = result.data;
 
         next();
     };
 };
+

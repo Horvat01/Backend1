@@ -1,22 +1,25 @@
-export const createBookingSchema = {
-    validate: (body) => {
-        const errors = [];
+import { z } from 'zod';
 
-        if (!body.serviceId) {
-            errors.push('serviceId es requerido');
-        }
+export const createBookingSchema = z.object({
+    clientName: z
+        .string()
+        .min(2, 'El nombre del cliente es obligatorio'),
 
-        if (!body.clientName) {
-            errors.push('clientName es requerido');
-        }
+    date: z.coerce.date({
+        message: 'La fecha es obligatoria'
+    }),
 
-        if (!body.date) {
-            errors.push('date es requerido');
-        }
+    services: z
+        .array(
+            z.object({
+                service: z.string().min(1, 'El servicio es obligatorio'),
+                quantity: z
+                    .number()
+                    .int()
+                    .min(1, 'La cantidad debe ser mayor a cero')
+            })
+        )
+        .optional()
+        .default([])
+});
 
-        return {
-            valid: errors.length === 0,
-            errors
-        };
-    }
-};

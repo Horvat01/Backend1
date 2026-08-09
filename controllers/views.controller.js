@@ -1,3 +1,6 @@
+import { getServices } from '../services/service.service.js';
+import { getBookings } from '../services/booking.service.js';
+
 export const getHome = async (req, res) => {
     try {
         res.render('home', {
@@ -13,9 +16,13 @@ export const getHome = async (req, res) => {
 
 export const getBookingsView = async (req, res) => {
     try {
+        const bookings = await getBookings();
+
         res.render('bookings', {
-            title: 'Reservas'
+            title: 'Reservas',
+            bookings
         });
+
     } catch (error) {
         res.status(500).json({
             status: 'error',
@@ -26,8 +33,14 @@ export const getBookingsView = async (req, res) => {
 
 export const getServicesView = async (req, res) => {
     try {
+        const result = await getServices({
+            page: 1,
+            limit: 100
+        });
+
         res.render('services', {
-            title: 'Servicios'
+            title: 'Servicios',
+            services: result.docs
         });
     } catch (error) {
         res.status(500).json({
@@ -37,11 +50,19 @@ export const getServicesView = async (req, res) => {
     }
 };
 
+
 export const getRealtimeServicesView = async (req, res) => {
     try {
-        res.render('realtime-services', {
-            title: 'Servicios en tiempo real'
+        const result = await getServices({
+            page: 1,
+            limit: 100
         });
+
+        res.render('realtime-services', {
+            title: 'Servicios en tiempo real',
+            services: result.docs
+        });
+
     } catch (error) {
         res.status(500).json({
             status: 'error',
@@ -73,4 +94,3 @@ export const renderServices = async (req, res) => {
 export const renderRealtimeServices = async (req, res) => {
     return getRealtimeServicesView(req, res);
 };
-

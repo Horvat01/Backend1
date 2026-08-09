@@ -2,27 +2,29 @@
 
 {{#if services}}
 
-```
-{{#each services}}
+    {{#each services}}
+        <article>
+            <h2>{{name}}</h2>
 
-    <article>
-        <h2>{{name}}</h2>
-        <p>{{description}}</p>
+            <p>{{description}}</p>
 
-        <span class="badge">{{category}}</span>
+            <p>Categoría: {{category}}</p>
 
-        <p>Duración: {{duration}} minutos</p>
-        <p>Precio: ${{price}}</p>
+            <p>Duración: {{duration}} minutos</p>
 
-    </article>
+            <p>Precio: ${{price}}</p>
 
-{{/each}}
-```
+            {{#if available}}
+                <p>Disponibilidad: Disponible</p>
+            {{else}}
+                <p>Disponibilidad: No disponible</p>
+            {{/if}}
+        </article>
+    {{/each}}
 
 {{else}}
 
-```
-<p class="error">No hay servicios disponibles.</p>
-```
+    <p class="error">No hay servicios disponibles.</p>
 
 {{/if}}
+

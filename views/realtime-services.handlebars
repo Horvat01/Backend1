@@ -2,7 +2,52 @@
 
 <p>Los servicios se actualizarán automáticamente cuando haya cambios.</p>
 
-<div id="services-container"></div>
+<div id="services-container">
+
+    {{#if services}}
+
+        {{#each services}}
+
+            <article>
+                <h3>{{name}}</h3>
+
+                <p>{{description}}</p>
+
+                <p>
+                    <strong>Precio:</strong>
+                    ${{price}}
+                </p>
+
+                <p>
+                    <strong>Duración:</strong>
+                    {{duration}} min
+                </p>
+
+                <p>
+                    <strong>Categoría:</strong>
+                    {{category}}
+                </p>
+
+                <p>
+                    <strong>Disponible:</strong>
+                    {{#if available}}
+                        Sí
+                    {{else}}
+                        No
+                    {{/if}}
+                </p>
+            </article>
+
+        {{/each}}
+
+    {{else}}
+
+        <p>No hay servicios disponibles.</p>
+
+    {{/if}}
+
+</div>
 
 <script src="/socket.io/socket.io.js"></script>
-<script src="/realtime-services.js"></script>
+<script src="/js/socket.js"></script>
+

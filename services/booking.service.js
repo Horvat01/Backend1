@@ -1,5 +1,9 @@
 import * as bookingRepository from '../repositories/bookings.repository.js';
 
+export const getBookings = async () => {
+    return bookingRepository.getAll();
+};
+
 export const createBooking = async (bookingData) => {
     const newBooking = {
         ...bookingData,

@@ -1,13 +1,23 @@
-import * as bookingDao from '../dao/bookings.dao.js';
+import { bookingMongoDao } from '../dao/mongo/booking.mongo.dao.js';
+
+export const getAll = async () => {
+    return bookingMongoDao.getAll();
+};
 
 export const create = async (bookingData) => {
-    return bookingDao.create(bookingData);
+    return bookingMongoDao.create(bookingData);
 };
 
 export const getById = async (id) => {
-    return bookingDao.getById(id);
+    return bookingMongoDao.getById(id, {
+        populate: true
+    });
 };
 
 export const update = async (id, bookingData) => {
-    return bookingDao.update(id, bookingData);
+    return bookingMongoDao.update(id, bookingData);
+};
+
+export const remove = async (id) => {
+    return bookingMongoDao.delete(id);
 };

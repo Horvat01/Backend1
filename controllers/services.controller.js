@@ -6,6 +6,8 @@ import {
     deleteService as deleteServiceService
 } from '../services/service.service.js';
 
+import { getIO } from '../utils/socket.js';
+
 // GET /api/services
 export const getServices = async (req, res) => {
     try {
@@ -75,6 +77,9 @@ export const getServiceById = async (req, res) => {
 export const createService = async (req, res) => {
     try {
         const newService = await createServiceService(req.body);
+
+        // Avisar que se creo un servicio
+        getIO().emit('serviceCreated', newService);
 
         res.status(201).json({
             status: 'success',
