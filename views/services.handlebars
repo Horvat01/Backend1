@@ -1,3 +1,28 @@
-<h1>{{title}}</h1>
+<h1>Servicios</h1>
 
-<p>Servicios</p>
+{{#if services}}
+
+```
+{{#each services}}
+
+    <article>
+        <h2>{{name}}</h2>
+        <p>{{description}}</p>
+
+        <span class="badge">{{category}}</span>
+
+        <p>Duración: {{duration}} minutos</p>
+        <p>Precio: ${{price}}</p>
+
+    </article>
+
+{{/each}}
+```
+
+{{else}}
+
+```
+<p class="error">No hay servicios disponibles.</p>
+```
+
+{{/if}}

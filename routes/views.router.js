@@ -1,34 +1,26 @@
 import { Router } from 'express';
 
+import {
+    getHome,
+    getBookingsView,
+    getServicesView,
+    getRealtimeServicesView,
+    renderBooking
+} from '../controllers/views.controller.js';
 
 const router = Router();
 
 
-router.get('/', (req, res) => {
-
-    res.render('home', {
-        title: 'Inicio'
-    });
-
-});
+router.get('/', getHome);
 
 
-router.get('/services', (req, res) => {
-
-    res.render('services', {
-        title: 'Servicios'
-    });
-
-});
+router.get('/services', getServicesView);
 
 
-router.get('/bookings', (req, res) => {
+router.get('/realtime-services', getRealtimeServicesView);
 
-    res.render('bookings', {
-        title: 'Reservas'
-    });
+router.get('/bookings', getBookingsView);
 
-});
-
+router.get('/bookings/:bid', renderBooking);
 
 export default router;
