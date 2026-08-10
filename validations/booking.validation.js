@@ -23,3 +23,11 @@ export const createBookingSchema = z.object({
         .default([])
 });
 
+export const addServiceToBookingSchema = z.object({
+    quantity: z
+        .number()
+        .int()
+        .min(1, 'La cantidad debe ser mayor a cero')
+        .optional()
+        .default(1)
+});

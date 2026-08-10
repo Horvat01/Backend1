@@ -16,7 +16,8 @@ export const getServices = async (req, res) => {
             available,
             page,
             limit,
-            sort
+            sortBy,
+            order
         } = req.query;
 
         const result = await getAllServices({
@@ -24,18 +25,21 @@ export const getServices = async (req, res) => {
             available,
             page,
             limit,
-            sort
+            sortBy,
+            order
         });
 
         res.status(200).json({
             status: 'success',
             payload: result.docs,
-            totalPages: result.totalPages,
-            prevPage: result.prevPage,
-            nextPage: result.nextPage,
+            total: result.total,
             page: result.page,
+            limit: result.limit,
+            totalPages: result.totalPages,
             hasPrevPage: result.hasPrevPage,
-            hasNextPage: result.hasNextPage
+            hasNextPage: result.hasNextPage,
+            prevPage: result.prevPage,
+            nextPage: result.nextPage
         });
 
     } catch (error) {

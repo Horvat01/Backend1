@@ -7,7 +7,7 @@ import {
 } from '../controllers/bookings.controller.js';
 
 import { validateBody } from '../middlewares/validateBody.js';
-import { createBookingSchema } from '../validations/booking.validation.js';
+import {createBookingSchema,addServiceToBookingSchema} from '../validations/booking.validation.js';
 
 
 const router = Router();
@@ -22,6 +22,6 @@ router.post(
     createBooking
 );
 
-router.post('/:bid/services/:sid', addServiceToBooking);
+router.post('/:bid/services/:sid',validateBody(addServiceToBookingSchema),addServiceToBooking);
 
 export default router;
