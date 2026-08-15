@@ -1,17 +1,21 @@
 # Sistema Backend de Turnos y Reservas
 
-Backend desarrollado con **Node.js, Express, MongoDB, Mongoose, Zod y Socket.IO** para gestionar servicios y reservas.
+Backend desarrollado con **Node.js, Express, MongoDB, Mongoose, Zod, Express Handlebars y Socket.IO** para gestionar servicios y reservas.
+
+El proyecto implementa una arquitectura por capas, validación de datos, persistencia en MongoDB, relaciones entre servicios y reservas mediante `ObjectId`, `populate` y actualización de información en tiempo real mediante Socket.IO.
+
+---
 
 ## Tecnologías utilizadas
 
-* Node.js
-* Express
-* MongoDB
-* Mongoose
-* Zod
-* Express Handlebars
-* Socket.IO
-* dotenv
+- Node.js
+- Express
+- MongoDB
+- Mongoose
+- Zod
+- Express Handlebars
+- Socket.IO
+- dotenv
 
 ---
 
@@ -33,6 +37,8 @@ MONGO_URI=tu_conexion_a_mongodb
 NODE_ENV=development
 ```
 
+> El archivo `.env` contiene información sensible y no debe subirse al repositorio.
+
 Iniciar el servidor:
 
 ```bash
@@ -47,11 +53,35 @@ http://localhost:3000
 
 ---
 
+# Variables de entorno
+
+El proyecto utiliza variables de entorno para configurar el servidor y la conexión con MongoDB.
+
+Las variables utilizadas son:
+
+```env
+PORT=3000
+MONGO_URI=tu_conexion_a_mongodb
+NODE_ENV=development
+```
+
+También se incluye un archivo `.env.example` como referencia:
+
+```env
+PORT=3000
+MONGO_URI=tu_uri_de_mongodb
+NODE_ENV=development
+```
+
+El archivo `.env` se encuentra excluido del repositorio mediante `.gitignore`.
+
+---
+
 # Servicios
 
-## Obtener servicios
+Los servicios representan las prestaciones que pueden ser asociadas a una reserva.
 
-Endpoint:
+## Obtener servicios
 
 ```http
 GET /api/services
@@ -83,7 +113,7 @@ GET /api/services?page=1&limit=2
 
 El listado puede ordenarse utilizando `sortBy` y `order`.
 
-Por ejemplo, ordenar por precio de menor a mayor:
+Ordenar por precio de menor a mayor:
 
 ```http
 GET /api/services?sortBy=price&order=asc
@@ -105,14 +135,14 @@ GET /api/services?category=Reparaciones&available=true&page=1&limit=10&sortBy=pr
 
 La respuesta incluye:
 
-* `total`: cantidad total de resultados
-* `page`: página actual
-* `limit`: cantidad de resultados por página
-* `totalPages`: cantidad total de páginas
-* `hasPrevPage`: indica si existe una página anterior
-* `hasNextPage`: indica si existe una página siguiente
-* `prevPage`: número de la página anterior
-* `nextPage`: número de la página siguiente
+- `total`: cantidad total de resultados.
+- `page`: página actual.
+- `limit`: cantidad de resultados por página.
+- `totalPages`: cantidad total de páginas.
+- `hasPrevPage`: indica si existe una página anterior.
+- `hasNextPage`: indica si existe una página siguiente.
+- `prevPage`: número de la página anterior.
+- `nextPage`: número de la página siguiente.
 
 Ejemplo:
 
@@ -133,21 +163,13 @@ Ejemplo:
 
 ---
 
-# Validación con Zod
-
-La API utiliza **Zod** para validar los datos antes de enviarlos a MongoDB.
-
-Las validaciones se aplican mediante el middleware `validateBody`.
-
-Los datos inválidos generan una respuesta `400` y no continúan hacia la capa de persistencia.
-
 ## Crear servicio
 
 ```http
 POST /api/services
 ```
 
-Ejemplo válido:
+Ejemplo:
 
 ```json
 {
@@ -159,6 +181,22 @@ Ejemplo válido:
   "available": true
 }
 ```
+
+---
+
+## Obtener servicio por ID
+
+```http
+GET /api/services/:sid
+```
+
+Ejemplo:
+
+```http
+GET /api/services/6a78d8bd6e1ad5a42f103b42
+```
+
+---
 
 ## Actualizar servicio
 
@@ -176,6 +214,46 @@ Ejemplo:
 
 La actualización utiliza un schema parcial, por lo que se pueden modificar solamente los campos necesarios.
 
+---
+
+## Eliminar servicio
+
+```http
+DELETE /api/services/:sid
+```
+
+Elimina el servicio indicado mediante su ID.
+
+---
+
+# Validación con Zod
+
+La API utiliza **Zod** para validar los datos antes de enviarlos a MongoDB.
+
+Las validaciones se aplican mediante el middleware:
+
+```text
+validateBody
+```
+
+Los datos inválidos generan una respuesta `400` y no continúan hacia la capa de persistencia.
+
+Ejemplo de respuesta ante datos inválidos:
+
+```json
+{
+  "status": "error",
+  "message": "Datos inválidos",
+  "errors": []
+}
+```
+
+---
+
+# Reservas
+
+Las reservas permiten asociar servicios a un cliente junto con una fecha determinada.
+
 ## Crear reserva
 
 ```http
@@ -191,6 +269,24 @@ Ejemplo:
   "services": []
 }
 ```
+
+---
+
+## Obtener reserva por ID
+
+```http
+GET /api/bookings/:bid
+```
+
+Ejemplo:
+
+```http
+GET /api/bookings/6a790408b5d88d40ebfacd28
+```
+
+Este endpoint devuelve la reserva junto con los servicios asociados mediante `populate`.
+
+---
 
 ## Agregar servicio a una reserva
 
@@ -208,9 +304,53 @@ Ejemplo:
 
 La cantidad debe ser un número entero mayor o igual a `1`.
 
+Si el servicio ya se encuentra dentro de la reserva, se incrementa su cantidad.
+
+Si no existe, se agrega como un nuevo servicio.
+
 ---
 
-# Reservas y relaciones entre colecciones
+## Actualizar cantidad de un servicio
+
+```http
+PUT /api/bookings/:bid/services/:sid
+```
+
+Ejemplo:
+
+```json
+{
+  "quantity": 5
+}
+```
+
+Permite modificar la cantidad de un servicio que ya se encuentra asociado a la reserva.
+
+La cantidad debe ser un número entero mayor o igual a `1`.
+
+---
+
+## Eliminar un servicio de una reserva
+
+```http
+DELETE /api/bookings/:bid/services/:sid
+```
+
+Elimina el servicio indicado de la reserva.
+
+---
+
+## Eliminar una reserva
+
+```http
+DELETE /api/bookings/:bid
+```
+
+Elimina la reserva completa.
+
+---
+
+# Relaciones entre colecciones
 
 Las reservas mantienen los servicios como referencias mediante `ObjectId`.
 
@@ -228,25 +368,32 @@ services: [
 ]
 ```
 
-De esta manera, la reserva **no almacena el objeto completo del servicio**.
+De esta manera, la reserva **no almacena el objeto completo del servicio**, sino una referencia al documento correspondiente.
+
+Ejemplo de cómo se almacena la relación:
+
+```json
+{
+  "services": [
+    {
+      "service": "6a78d8bd6e1ad5a42f103b42",
+      "quantity": 5
+    }
+  ]
+}
+```
 
 ---
 
 # Populate
 
-Para consultar una reserva junto con la información completa de los servicios asociados:
+Para consultar una reserva junto con la información completa de los servicios asociados se utiliza Mongoose `populate`.
+
+Endpoint:
 
 ```http
 GET /api/bookings/:bid
 ```
-
-Ejemplo:
-
-```http
-GET /api/bookings/6a790408b5d88d40ebfacd28
-```
-
-El endpoint utiliza Mongoose `populate` para reemplazar la referencia del servicio por sus datos completos.
 
 Ejemplo de respuesta:
 
@@ -275,7 +422,9 @@ Ejemplo de respuesta:
 }
 ```
 
-El `populate` se utiliza únicamente durante la consulta. La reserva continúa almacenando solamente la referencia `ObjectId` del servicio.
+El `populate` se utiliza durante la consulta para obtener la información completa del servicio.
+
+La reserva continúa almacenando únicamente la referencia `ObjectId` del servicio en MongoDB.
 
 ---
 
@@ -283,63 +432,84 @@ El `populate` se utiliza únicamente durante la consulta. La reserva continúa a
 
 ## Servicios
 
-| Método | Endpoint             | Descripción             |
-| ------ | -------------------- | ----------------------- |
-| GET    | `/api/services`      | Listar servicios        |
-| GET    | `/api/services/:sid` | Obtener servicio por ID |
-| POST   | `/api/services`      | Crear servicio          |
-| PUT    | `/api/services/:sid` | Actualizar servicio     |
-| DELETE | `/api/services/:sid` | Eliminar servicio       |
+| Método | Endpoint | Descripción |
+| ------ | -------- | ----------- |
+| GET | `/api/services` | Listar servicios |
+| GET | `/api/services/:sid` | Obtener servicio por ID |
+| POST | `/api/services` | Crear servicio |
+| PUT | `/api/services/:sid` | Actualizar servicio |
+| DELETE | `/api/services/:sid` | Eliminar servicio |
 
 ## Reservas
 
-| Método | Endpoint                           | Descripción                                       |
-| ------ | ---------------------------------- | ------------------------------------------------- |
-| GET    | `/api/bookings/:bid`               | Obtener reserva con servicios mediante `populate` |
-| POST   | `/api/bookings`                    | Crear reserva                                     |
-| POST   | `/api/bookings/:bid/services/:sid` | Agregar servicio a una reserva                    |
+| Método | Endpoint | Descripción |
+| ------ | -------- | ----------- |
+| GET | `/api/bookings/:bid` | Obtener reserva con servicios mediante `populate` |
+| POST | `/api/bookings` | Crear reserva |
+| POST | `/api/bookings/:bid/services/:sid` | Agregar servicio a una reserva |
+| PUT | `/api/bookings/:bid/services/:sid` | Actualizar cantidad de un servicio |
+| DELETE | `/api/bookings/:bid/services/:sid` | Eliminar un servicio de una reserva |
+| DELETE | `/api/bookings/:bid` | Eliminar una reserva |
 
 ---
 
 # Vistas
 
-El proyecto también dispone de vistas utilizando Express Handlebars:
+El proyecto también dispone de vistas utilizando **Express Handlebars**.
+
+## Página principal
 
 ```text
 /
 ```
 
-Página principal.
+Página principal del proyecto.
+
+## Servicios
 
 ```text
 /services
 ```
 
-Listado de servicios.
+Muestra el listado de servicios.
+
+## Servicios en tiempo real
 
 ```text
 /realtime-services
 ```
 
-Servicios actualizados en tiempo real mediante Socket.IO.
+Permite visualizar los servicios y recibir actualizaciones mediante Socket.IO sin necesidad de recargar manualmente la página.
+
+## Reservas
 
 ```text
 /bookings
 ```
 
-Listado de reservas.
+Muestra el listado de reservas.
+
+## Detalle de una reserva
 
 ```text
 /bookings/:bid
 ```
 
-Detalle de una reserva.
+Muestra la información de una reserva y sus servicios asociados.
 
 ---
 
 # Socket.IO
 
-El proyecto utiliza Socket.IO para actualizar los servicios en tiempo real.
+El proyecto utiliza **Socket.IO** para proporcionar comunicación en tiempo real entre el servidor y los clientes conectados.
+
+La vista:
+
+```text
+/realtime-services
+```
+
+permite visualizar actualizaciones de servicios en tiempo real.
 
 Cuando se crea un nuevo servicio, el servidor emite el evento:
 
@@ -347,7 +517,7 @@ Cuando se crea un nuevo servicio, el servidor emite el evento:
 serviceCreated
 ```
 
-Los clientes conectados pueden recibir la actualización automáticamente.
+Los clientes conectados pueden recibir la actualización automáticamente sin necesidad de recargar la página.
 
 ---
 
@@ -369,28 +539,151 @@ DAO
 MongoDB
 ```
 
-Las validaciones se realizan mediante middleware antes de llegar a la capa de persistencia.
+### Routes
 
-Esto permite mantener separadas las responsabilidades de rutas, validaciones, lógica de negocio y acceso a datos.
+Definen los endpoints disponibles de la API.
+
+### Controllers
+
+Reciben las solicitudes HTTP, ejecutan la lógica correspondiente y construyen las respuestas.
+
+### Services
+
+Contienen la lógica de negocio de la aplicación.
+
+### Repositories
+
+Actúan como intermediarios entre la lógica de negocio y la capa de acceso a datos.
+
+### DAO
+
+Se encargan de interactuar directamente con los modelos de MongoDB mediante Mongoose.
+
+### MongoDB
+
+Es la base de datos utilizada para persistir servicios y reservas.
+
+### Validaciones
+
+Las validaciones se realizan mediante middleware y Zod antes de llegar a la capa de persistencia.
+
+Esta separación permite mantener organizadas las responsabilidades y facilita futuras modificaciones del proyecto.
 
 ---
 
-# Seguridad
+# Estructura del proyecto
+
+La estructura general del proyecto se organiza de la siguiente manera:
+
+```text
+src/
+├── config/
+├── controllers/
+├── dao/
+│   └── mongo/
+├── data/
+├── middlewares/
+├── models/
+├── repositories/
+├── routes/
+├── services/
+├── validations/
+├── views/
+│   └── layouts/
+└── public/
+    ├── css/
+    └── js/
+```
+
+Además, en la raíz del proyecto se encuentran archivos como:
+
+```text
+package.json
+package-lock.json
+README.md
+.gitignore
+.env.example
+index.js
+```
+
+---
+
+# Pruebas manuales
+
+Los endpoints principales fueron probados manualmente utilizando Postman.
+
+Se verificaron operaciones sobre servicios:
+
+- Crear servicio.
+- Listar servicios.
+- Obtener servicio por ID.
+- Actualizar servicio.
+- Eliminar servicio.
+
+También se verificaron operaciones sobre reservas:
+
+- Crear reserva.
+- Obtener reserva.
+- Agregar servicio a una reserva.
+- Actualizar cantidad de un servicio.
+- Eliminar servicio de una reserva.
+- Eliminar una reserva.
+- Consultar una reserva utilizando `populate`.
+
+También se probaron casos de error, incluyendo:
+
+- Consultar un servicio inexistente.
+- Consultar una reserva inexistente.
+- Crear un servicio con datos incompletos.
+- Validación de datos mediante Zod.
+
+---
+
+# Seguridad y archivos sensibles
 
 El archivo `.env` no debe subirse al repositorio.
 
-Tampoco se debe incluir:
+Tampoco se deben incluir:
 
-* `node_modules`
-* credenciales de MongoDB
-* claves privadas
-* variables de entorno con información sensible
+- `node_modules`
+- credenciales de MongoDB
+- claves privadas
+- información sensible
+- archivos temporales
+- archivos generados automáticamente
 
-El proyecto debe utilizar un archivo `.gitignore` para evitar subir estos archivos.
+El proyecto utiliza `.gitignore` para evitar subir estos archivos al repositorio.
+
+El archivo `.env.example` se incluye como referencia para configurar las variables de entorno necesarias.
+
+---
+
+# Funcionalidades principales
+
+El sistema incluye:
+
+- Gestión completa de servicios.
+- CRUD de servicios.
+- Filtrado de servicios.
+- Paginación.
+- Ordenamiento.
+- Validación de datos mediante Zod.
+- Gestión de reservas.
+- Asociación entre reservas y servicios.
+- Actualización de cantidades de servicios.
+- Eliminación de servicios de reservas.
+- Eliminación de reservas.
+- Relaciones entre colecciones mediante `ObjectId`.
+- `populate` mediante Mongoose.
+- Vistas server-side con Express Handlebars.
+- Comunicación en tiempo real mediante Socket.IO.
+- Arquitectura por capas.
+- Persistencia en MongoDB.
 
 ---
 
 # Autor
 
-Proyecto desarrollado como parte de la pre-entrega 8.
-Mathias Horvat.
+Proyecto desarrollado como parte del curso de Backend.
+
+**Mathias Horvat**
